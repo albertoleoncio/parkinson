@@ -5,7 +5,8 @@ import requests
 class Command(BaseCommand):
     
     def handle(self, *args, **options):
-        petscan_url = 'https://petscan.wmcloud.org/?psid=31781056&format=json'
+        psid = options['psid']
+        petscan_url = f'https://petscan.wmcloud.org/?psid={psid}&format=json'
         response = requests.get(petscan_url)
         data = response.json()
         for article in data['*'][0]['a']['*']:

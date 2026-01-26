@@ -31,3 +31,34 @@ class Command(BaseCommand):
                         else:
                             print("PMID not found by API")
                 print()
+
+            # If pmid or doi is found, try to get the rest of the data (year, cctld from source website location) from API
+            if ref.pmid:
+                print(f"+ Reference {ref.page.language_code} - {ref.page.page_name}")
+                api = f"https://pubmed.ncbi.nlm.nih.gov/{ref.pmid}/?format=pubmed"
+                response = requests.get(api)
+                sleep(0.34)
+                if response.status_code == 200:
+                    data = response.text
+                    year_regex = re.search(r"\b\d{4}\b", data)
+                    year = year_regex.group(0) if year_regex else None
+                    print(f"Year: {year}")
+                    ref.year = year if year else 0
+                    ref.save()
+                else:
+                    print("Error fetching data from PMID API")
+                print(f"PMID: {ref.pmid}")
+            elif ref.doi:
+                print(f"PMID not found. Trying API with DOI {ref.doi}...")
+                # Use CrossRef API to get the DOI information
+                api = f"https://api.crossref.org/works/{ref.doi}"
+                response = requests.get(api)
+                sleep(0.34)
+                if response.status_code == 200:
+                    data = response.json()
+                    year = data['message']['published-print']['date-parts'][0][0] if 'published-print' in data['message'] else None
+                    print(f"Year: {year}")
+                    ref.year = year if year else 0
+                    ref.save()
+                else:
+                    print("Error fetching data from CrossRef API")

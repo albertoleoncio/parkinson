@@ -15,19 +15,20 @@ class Command(BaseCommand):
                     continue
 
                 url = re.search(r'(https?://[^\s]+)', inner.text)
-                year = re.search(r'20[012]\d', inner.text)
+                years = re.findall(r'19\d{2}|20[012]\d', inner.text)
+                year = max(map(int, years)) if years else None
                 cctld = re.search(r'(?<=\.)[a-z]+(?=\/)', url.group(0)) if url else None
                 doi = re.search(r'10\.\d{4,9}\/[-._;()/:a-zA-Z0-9]+', inner.text)
 
                 Reference.objects.create(
                     page=content.page,
                     reference=inner.text,
-                    year=year.group(0) if year else 0,
+                    year=year if year else 0,
                     cctld=cctld.group(0) if cctld else '',
                     doi=doi.group(0) if doi else ''
                 )
                 print(f"Reference: {inner.text}")
-                print(f"Year: {year.group(0) if year else ''}")
+                print(f"Year: {year if year else ''}")
                 print(f"CCTLD: {cctld.group(0) if cctld else ''}")
                 print(f"DOI: {doi.group(0) if doi else ''}")
                 print()
