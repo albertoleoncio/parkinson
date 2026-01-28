@@ -69,3 +69,10 @@ class Authorship(models.Model):
 
     def __str__(self):
         return self.page.language_code + ' - ' + self.page.referer.article_name
+
+class Pageviews(models.Model):
+    page = models.ForeignKey(Page, on_delete=models.CASCADE)
+    views = models.IntegerField()
+
+    def __str__(self):
+        return self.page.language_code + ' - ' + self.page.referer.article_name + ' - ' + str(self.date)
