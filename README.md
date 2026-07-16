@@ -184,7 +184,7 @@ This project is open source and available on GitHub.
 
 ## Author
 
-Alberto Leon Cioth ([@albertoleoncio](https://github.com/albertoleoncio))
+Alberto Leoncio ([@albertoleoncio](https://github.com/albertoleoncio))
 
 ---
 
